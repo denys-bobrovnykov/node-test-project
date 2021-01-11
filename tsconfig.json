@@ -5,10 +5,15 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "rootDir": "src",
+    "outDir": "target",
+    "typeRoots": [
+      "./typings/",
+      "./node_modules/@types/"
+    ]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"],
-  "$schema": "https://json.schemastore.org/tsconfig",
+  "exclude": ["node_modules", "**/*.spec.ts", "**/typings"],
   "display": "Recommended"
 }
