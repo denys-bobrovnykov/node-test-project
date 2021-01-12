@@ -4,6 +4,8 @@
 
 ![alt model](./info/my_model.png)
 
+DB model test_task_db.mwb and script for creation in root folder.
+
 ## GET ALL TEACHERS
 
 ![alt demo](./info/get_all.gif)
