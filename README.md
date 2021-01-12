@@ -26,5 +26,5 @@
 
 ## GET TARGET TEACHERS
 
-Implemented using raw SQL and prepared request.
+Implemented using raw SQL and prepared statement.
 Please see my db.ts and constants.ts.
