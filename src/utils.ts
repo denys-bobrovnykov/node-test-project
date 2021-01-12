@@ -49,7 +49,6 @@ export const createTeacherObject = (element: DBitem): Teacher => {
     }
 }
 
-
 function formatValue(value: number): string | number {
   return value > 10 ? value : '0' + value;
 }

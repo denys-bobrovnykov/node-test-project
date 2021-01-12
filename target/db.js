@@ -113,7 +113,6 @@ const updateExperienceInDB = (staffNumber, experience) => __awaiter(void 0, void
         const result = yield table.update().where(`staff_number = :number`).set('years_of_experience', experience)
             .bind('number', staffNumber)
             .execute();
-        console.log(result);
         return result.getAffectedItemsCount();
     }
     catch (e) {
@@ -135,7 +134,6 @@ const deleteFromDB = (staffNumber) => __awaiter(void 0, void 0, void 0, function
         const result = yield table.delete().where(`staff_number = :number`)
             .bind('number', staffNumber)
             .execute();
-        console.log(result);
         return result.getAffectedItemsCount();
     }
     catch (e) {
@@ -147,6 +145,7 @@ const deleteFromDB = (staffNumber) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.deleteFromDB = deleteFromDB;
+// Get all teachers
 const getAllTeachers = () => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield dbClient.getSession();
     try {
@@ -158,12 +157,14 @@ const getAllTeachers = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (e) {
         console.log(e);
+        throw e;
     }
     finally {
         closeConnection(connection);
     }
 });
 exports.getAllTeachers = getAllTeachers;
+// Get target teachers with prepared statement
 const getTargetMathTeachers = (classRoom, dayOfWeek, yearsOfExperience, specialization, timeStart, timeEnd) => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield dbClient.getSession();
     try {

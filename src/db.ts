@@ -101,7 +101,6 @@ export const updateExperienceInDB = async (staffNumber: number, experience: numb
     const result = await table.update().where(`staff_number = :number`).set('years_of_experience', experience)
     .bind('number', staffNumber)
     .execute();
-    console.log(result)
     return result.getAffectedItemsCount();
   } catch (e) {
     console.log(e);
@@ -121,7 +120,6 @@ export const deleteFromDB = async (staffNumber: number): Promise<unknown> => {
     const result = await table.delete().where(`staff_number = :number`)
     .bind('number', staffNumber)
     .execute();
-    console.log(result)
     return result.getAffectedItemsCount();
   } catch (e) {
     console.log(e);
@@ -131,7 +129,8 @@ export const deleteFromDB = async (staffNumber: number): Promise<unknown> => {
   }
 };
 
-export const getAllTeachers = async (): Promise<unknown> => {
+// Get all teachers
+export const getAllTeachers = async (): Promise<DBitem[]> => {
   const connection = await dbClient.getSession();
   try {
     await connection.sql(USE_TABLE).execute();
@@ -141,12 +140,14 @@ export const getAllTeachers = async (): Promise<unknown> => {
     return result.fetchAll();
   } catch (e) {
     console.log(e);
+    throw e;
   } finally {
     closeConnection(connection);
   }
 
 };
 
+// Get target teachers with prepared statement
 export const getTargetMathTeachers = async (
   classRoom: number,
   dayOfWeek: number,
@@ -154,7 +155,7 @@ export const getTargetMathTeachers = async (
   specialization: Subject,
   timeStart: string,
   timeEnd: string
-  ): Promise<any> => {
+  ): Promise<DBitem[]> => {
   const connection = await dbClient.getSession();
   try {
     await connection.sql(USE_TABLE).execute();

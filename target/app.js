@@ -50,7 +50,14 @@ process.on('SIGINT', () => {
 });
 app.get('/teachers', (req, res) => {
     db_1.getAllTeachers()
-        .then(result => res.send({ result }));
+        .then(result => {
+        const teachers = [];
+        result.forEach(element => {
+            teachers.push(utils_1.createTeacherObject(element));
+        });
+        console.log(teachers);
+        res.send({ result: teachers });
+    });
 });
 app.post('/teachers', (req, res, next) => {
     const { staffNumber, name, sex, age, yearsOfExperience, specialization } = req.query;
@@ -83,6 +90,7 @@ app.post('/teachers', (req, res, next) => {
     }
     db_1.createEntityInDB(newTeacher)
         .then(result => {
+        console.log(newTeacher);
         res.send({ result, newTeacher });
     })
         .catch(err => res.send({ error: err.message }));
@@ -126,12 +134,14 @@ app.get('/teachers/sex/:sex', (req, res) => {
             result.forEach(element => {
                 teachers.push(utils_1.createTeacherObject(element));
             });
+            console.log(teachers);
             res.send({ result: teachers });
         })
             .catch(err => res.send({ error: err }));
     }
     else {
-        res.send({ error: 'error' });
+        console.log('Wrong parameter');
+        res.send({ error: 'Wrong parameter' });
     }
 });
 app.put('/teachers/experience/:id/:exp', (req, res, next) => {
@@ -146,6 +156,7 @@ app.put('/teachers/experience/:id/:exp', (req, res, next) => {
         result.forEach((element) => {
             return teachers.push(utils_1.createTeacherObject(element));
         });
+        console.log(teachers);
         res.send({ result: teachers });
     }))
         .catch(err => res.send({ error: err }));
@@ -169,6 +180,7 @@ app.get('/teachers/subject/:sub', (req, res) => {
             result.forEach((element) => {
                 return teachers.push(utils_1.createTeacherObject(element));
             });
+            console.log(teachers);
             res.send({ result: teachers });
         })
             .catch(err => res.send({ error: err }));
@@ -185,6 +197,7 @@ app.get('/teachers/target', (req, res) => __awaiter(void 0, void 0, void 0, func
             const teacher = utils_1.createTeacherObject(element);
             teachers.push(teacher);
         }));
+        console.log(teachers);
         res.send({ result: teachers });
     }
     catch (err) {
