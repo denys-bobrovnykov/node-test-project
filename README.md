@@ -14,13 +14,13 @@ DB model test_task_db.mwb and script for creation in root folder.
 
 ![alt demo](./info/get_by_id.gif)
 
-## POST
+## CREATE
 
-![alt demo](./info/post_teacher.gif)
+![alt demo](./info/put_demo.gif)
 
 ## UPDATE
 
-![alt demo](./info/put_experience.gif)
+![alt demo](./info/post_demo.gif)
 
 ## DELETE
 

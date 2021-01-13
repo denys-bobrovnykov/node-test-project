@@ -59,11 +59,11 @@ app.get('/teachers', (req, res) => {
         res.send({ result: teachers });
     });
 });
-app.post('/teachers', (req, res, next) => {
+app.put('/teachers', (req, res, next) => {
     const { staffNumber, name, sex, age, yearsOfExperience, specialization } = req.query;
     if (!name && !sex && !age && !yearsOfExperience && !specialization) {
         res.send({ error: 'error' });
-        next();
+        return;
     }
     const newTeacher = {
         staffNumber: 0,
@@ -100,11 +100,15 @@ app.get('/teachers/name/:name', (req, res) => {
     if (typeof name === 'string') {
         db_1.getTeacherByName(name)
             .then(result => {
+            if (result.length === 0) {
+                res.send({ result });
+                return;
+            }
             const teachers = [];
             teachers.push(utils_1.createTeacherObject(result[0]));
             res.send({ result: teachers });
         })
-            .catch(err => res.send({ error: err }));
+            .catch(err => res.send({ error: err.message }));
     }
     else {
         res.send({ error: 'error' });
@@ -115,11 +119,17 @@ app.get('/teachers/id/:id', (req, res) => {
     if (typeof id === 'string') {
         db_1.getTeacherById(id)
             .then(result => {
+            if (result.length === 0) {
+                res.send({ result });
+                return;
+            }
             const teachers = [];
             teachers.push(utils_1.createTeacherObject(result[0]));
             res.send({ result: teachers });
         })
-            .catch(err => res.send({ error: err }));
+            .catch(err => {
+            res.send({ error: err });
+        });
     }
     else {
         res.send({ error: 'error' });
@@ -130,6 +140,10 @@ app.get('/teachers/sex/:sex', (req, res) => {
     if (sex && typeof sex === 'string') {
         db_1.getTeacherBySex(sex)
             .then(result => {
+            if (result.length === 0) {
+                res.send({ result });
+                return;
+            }
             const teachers = [];
             result.forEach(element => {
                 teachers.push(utils_1.createTeacherObject(element));
@@ -144,7 +158,7 @@ app.get('/teachers/sex/:sex', (req, res) => {
         res.send({ error: 'Wrong parameter' });
     }
 });
-app.put('/teachers/experience/:id/:exp', (req, res, next) => {
+app.post('/teachers/experience/:id/:exp', (req, res, next) => {
     console.log(req.params);
     const { id, exp } = req.params;
     if (!id && !exp) {
@@ -152,6 +166,10 @@ app.put('/teachers/experience/:id/:exp', (req, res, next) => {
     }
     db_1.updateExperienceInDB(parseInt(id), parseInt(exp))
         .then(() => db_1.getTeacherById(id).then(result => {
+        if (result.length === 0) {
+            res.send({ result });
+            return;
+        }
         const teachers = [];
         result.forEach((element) => {
             return teachers.push(utils_1.createTeacherObject(element));
@@ -176,6 +194,10 @@ app.get('/teachers/subject/:sub', (req, res) => {
     if (sub && typeof sub === 'string') {
         db_1.getTeacherBySubject(sub)
             .then(result => {
+            if (result.length === 0) {
+                res.send({ result });
+                return;
+            }
             const teachers = [];
             result.forEach((element) => {
                 return teachers.push(utils_1.createTeacherObject(element));
@@ -193,6 +215,10 @@ app.get('/teachers/target', (req, res) => __awaiter(void 0, void 0, void 0, func
     const teachers = [];
     try {
         const teachersResultArray = yield db_1.getTargetMathTeachers(100, 5, 10, models_1.Subject.Math, '08:30:00', '14:30:00');
+        if (teachersResultArray.length === 0) {
+            res.send({ result: teachersResultArray });
+            return;
+        }
         yield teachersResultArray.forEach((element) => __awaiter(void 0, void 0, void 0, function* () {
             const teacher = utils_1.createTeacherObject(element);
             teachers.push(teacher);

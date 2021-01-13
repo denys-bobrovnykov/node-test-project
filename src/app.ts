@@ -37,11 +37,11 @@ app.get('/teachers', (req, res) => {
     });
 })
 
-app.post('/teachers', (req, res, next) => {
+app.put('/teachers', (req, res, next) => {
   const {staffNumber, name, sex, age, yearsOfExperience, specialization} = req.query;
   if (!name && !sex && !age && !yearsOfExperience && !specialization) {
     res.send({error: 'error'});
-    next();
+    return;
   }
   const newTeacher: Teacher = {
     staffNumber: 0,
@@ -79,11 +79,15 @@ app.get('/teachers/name/:name', (req, res) => {
   if (typeof name === 'string') {
     getTeacherByName(name)
     .then(result => {
+      if (result.length === 0) {
+        res.send({result});
+        return;
+      }
       const teachers: Teacher[] = [];
       teachers.push(createTeacherObject(result[0]));
       res.send({result: teachers});
     })
-    .catch(err => res.send({error: err}));
+    .catch(err => res.send({error: err.message}));
   } else {
     res.send({error: 'error'});
   }
@@ -94,11 +98,17 @@ app.get('/teachers/id/:id', (req, res) => {
   if (typeof id === 'string') {
     getTeacherById(id)
       .then(result => {
+        if (result.length === 0) {
+          res.send({result});
+          return;
+        }
         const teachers: Teacher[] = [];
         teachers.push(createTeacherObject(result[0]));
         res.send({result: teachers});
       })
-      .catch(err => res.send({error: err}));
+      .catch(err => {
+        res.send({error: err})
+        ;});
   } else {
     res.send({error: 'error'});
   }
@@ -109,6 +119,10 @@ app.get('/teachers/sex/:sex', (req, res) => {
   if (sex && typeof sex === 'string') {
     getTeacherBySex(sex)
     .then(result => {
+      if (result.length === 0) {
+        res.send({result});
+        return;
+      }
       const teachers: Teacher[] = [];
       result.forEach(element => {
         teachers.push(createTeacherObject(element));
@@ -123,7 +137,7 @@ app.get('/teachers/sex/:sex', (req, res) => {
   }
 })
 
-app.put('/teachers/experience/:id/:exp', (req, res, next) => {
+app.post('/teachers/experience/:id/:exp', (req, res, next) => {
   console.log(req.params);
   const {id, exp} = req.params;
   if (!id && !exp) {
@@ -131,6 +145,10 @@ app.put('/teachers/experience/:id/:exp', (req, res, next) => {
   }
   updateExperienceInDB(parseInt(id), parseInt(exp))
     .then(() => getTeacherById(id).then(result => {
+      if (result.length === 0) {
+        res.send({result});
+        return;
+      }
       const teachers: Teacher[] = [];
       result.forEach((element) => {
         return teachers.push(createTeacherObject(element));
@@ -157,6 +175,10 @@ app.get('/teachers/subject/:sub', (req, res) => {
   if (sub && typeof sub === 'string') {
     getTeacherBySubject(sub)
     .then(result => {
+      if (result.length === 0) {
+        res.send({result});
+        return;
+      }
       const teachers: Teacher[] = [];
       result.forEach((element) => {
       return teachers.push(createTeacherObject(element));
@@ -174,6 +196,10 @@ app.get('/teachers/target', async (req, res) => {
   const teachers: Teacher[] = [];
   try {
     const teachersResultArray = await getTargetMathTeachers(100, 5, 10, Subject.Math, '08:30:00', '14:30:00');
+    if (teachersResultArray.length === 0) {
+      res.send({result: teachersResultArray});
+      return;
+    }
     await teachersResultArray.forEach(async (element: DBitem) => {
       const teacher: Teacher = createTeacherObject(element);
       teachers.push(teacher);
